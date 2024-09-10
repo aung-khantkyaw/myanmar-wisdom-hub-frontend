@@ -70,6 +70,16 @@ const Navbar = () => {
               <li>
                 <Link to="/riddle">Riddle</Link>
               </li>
+              {userData ? (
+                <>
+                  <li>
+                    <Link to="/newsfeed">Newsfeed</Link>
+                  </li>
+                  <li>
+                    <Link to="/quiz">Quiz</Link>
+                  </li>
+                </>
+              ) : null}
             </ul>
           </div>
           <a href="" className="font-black text-2xl">
@@ -94,6 +104,20 @@ const Navbar = () => {
                 Riddle
               </Link>
             </li>
+            {userData ? (
+              <>
+                <li>
+                  <Link to="/newsfeed" className="font-bold text-base">
+                    Newsfeed
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/quiz" className="font-bold text-base">
+                    Quiz
+                  </Link>
+                </li>
+              </>
+            ) : null}
           </ul>
         </div>
         <div className="navbar-end">
@@ -145,9 +169,7 @@ const Navbar = () => {
               </ul>
             </div>
           ) : (
-            <a href="/login"
-              className="btn btn-primary font-bold text-white"
-            >
+            <a href="/login" className="btn btn-primary font-bold text-white">
               Login
             </a>
           )}

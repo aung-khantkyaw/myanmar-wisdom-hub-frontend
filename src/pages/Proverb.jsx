@@ -7,6 +7,7 @@ import Error from "../components/Error";
 
 const Proverb = () => {
   const [proverbs, setProverbs] = useState([]);
+  const [showEnglish, setShowEnglish] = useState(true);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -47,26 +48,40 @@ const Proverb = () => {
           backgroundAttachment: "fixed",
         }}
       >
-        <div className="container mx-auto">
-          {proverbs.map((proverb) => (
-            <div key={proverb.id} className="justify-center items-center p-5">
-              <div className="border shadow-teal-300 shadow-md p-6 rounded-lg bg-base-100 w-full">
-                <h1 className="text-xl font-mono font-extrabold py-3">
-                  {proverb.proverb_burmese}
-                </h1>
-                <div className="divider"></div>
-                <div>
-                  <p className="text-lg font-semibold">
-                    {proverb.proverb_english}
-                  </p>
-                  <ul className="list-disc text-lg px-6">
-                    <li>{proverb.meaning_burmese}</li>
-                    <li>{proverb.meaning_english}</li>
-                  </ul>
-                </div>
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-white rounded rounded-lg flex justify-between p-6 mb-6 items-center">
+            <span className="font-bold">Proverb</span>
+            <button
+              className="btn btn-sm btn-primary"
+              onClick={() => setShowEnglish(!showEnglish)}
+            >
+              {showEnglish ? "View Burmese" : "View English"}
+            </button>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+            {proverbs.map((proverb, index) => (
+              <div
+                key={index}
+                className="bg-white rounded-lg shadow-md overflow-hidden"
+              >
+                {showEnglish ? (
+                  <div className="p-6">
+                    <h2 className="text-xl font-bold mb-2">
+                      {proverb.proverb_english}
+                    </h2>
+                    <p className="text-gray-600">{proverb.meaning_english}</p>
+                  </div>
+                ) : (
+                  <div className="p-6">
+                    <h2 className="text-xl font-bold mb-2">
+                      {proverb.proverb_burmese}
+                    </h2>
+                    <p className="text-gray-600">{proverb.meaning_burmese}</p>
+                  </div>
+                )}
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </div>

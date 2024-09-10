@@ -45,7 +45,36 @@ const Riddle = () => {
           backgroundAttachment: "fixed",
         }}
       >
-        <div className="container mx-auto">
+        <div className="container mx-auto py-12 px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+            {riddles.map((riddle) => (
+              <div
+                key={riddle.id}
+                className="bg-white shadow-md rounded-lg overflow-hidden"
+              >
+                <div className="p-6">
+                  <h2 className="text-lg font-bold mb-4">{riddle.riddle}</h2>
+                  <div className="hidden" id={`answer-${riddle.id}`}>
+                    <p className="font-bold mb-4 bg-base-200 p-2 rounded rounded-md">{riddle.answer}</p>
+                  </div>
+                  <button
+                    className="btn btn-neutral btn-sm text-primary-foreground px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                    onClick={() => {
+                      const answerElement = document.getElementById(
+                        `answer-${riddle.id}`
+                      );
+                      answerElement.classList.toggle("hidden");
+                    }}
+                  >
+                    Show/Hide Answer
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* <div className="container mx-auto">
           {riddles.map((riddle) => (
             <div
               className="collapse collapse-plus bg-base-100 m-2 border shadow-teal-300 shadow-md"
@@ -60,7 +89,7 @@ const Riddle = () => {
               </div>
             </div>
           ))}
-        </div>
+        </div> */}
       </div>
     </div>
   );
