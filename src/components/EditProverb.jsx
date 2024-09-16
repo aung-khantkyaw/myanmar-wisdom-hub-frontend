@@ -2,13 +2,20 @@ import { useState } from "react";
 import axios from "axios";
 import Success from "./Success";
 import Error from "./Error";
-
-const AddProverb = () => {
+import PropTypes from "prop-types";
+const EditProverb = ({
+  proverb_id,
+  proverb_burmese,
+  proverb_english,
+  meaning_burmese,
+  meaning_english,
+}) => {
   const [formData, setFormData] = useState({
-    proverb_burmese: "",
-    meaning_burmese: "",
-    proverb_english: "",
-    meaning_english: "",
+    id: proverb_id,
+    proverb_burmese: proverb_burmese,
+    meaning_burmese: meaning_burmese,
+    proverb_english: proverb_english,
+    meaning_english: meaning_english,
   });
 
   const [success, setSuccess] = useState("");
@@ -23,17 +30,21 @@ const AddProverb = () => {
   };
 
   const handleSubmit = async (e) => {
+    console.log(formData);
     e.preventDefault();
     try {
-      await axios.post("https://localhost:7051/api/Proverbs/add", formData);
+      await axios.put(
+        `https://localhost:7051/api/Proverbs/${proverb_id}`,
+        formData
+      );
       formData.proverb_burmese = "";
       formData.meaning_burmese = "";
       formData.proverb_english = "";
       formData.meaning_english = "";
-      setSuccess("Proverb added successfully!");
+      setSuccess("Proverb Edit successfully!");
       setError("");
     } catch (err) {
-      setError(err.response?.data?.message || "An error occurred");
+      setError(err.response?.message || "An error occurred");
       setSuccess("");
     }
   };
@@ -93,12 +104,18 @@ const AddProverb = () => {
             type="submit"
             className="btn btn-primary font-bold text-white"
           >
-            Add
+            Edit
           </button>
         </form>
       </div>
     </div>
   );
 };
-
-export default AddProverb;
+EditProverb.propTypes = {
+  proverb_id: PropTypes.number,
+  proverb_burmese: PropTypes.string,
+  proverb_english: PropTypes.string,
+  meaning_burmese: PropTypes.string,
+  meaning_english: PropTypes.string,
+};
+export default EditProverb;

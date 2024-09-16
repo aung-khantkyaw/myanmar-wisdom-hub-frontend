@@ -11,6 +11,9 @@ import Register from "./pages/Register";
 import Profile from "./pages/auth/Profile";
 import Dashboard from "./pages/auth/Dashboard";
 import Quiz from "./pages/Quiz";
+import AttemptQuiz from "./components/AttemptQuiz";
+import TwoPlayer from "./components/TwoPlayer";
+import AttemptQuizWith from "./components/AttemptQuizWith";
 
 const router = createBrowserRouter([
   {
@@ -34,8 +37,24 @@ const router = createBrowserRouter([
     element: <Register />,
   },
   {
-    path: "quiz",
+    path: "/quiz",
     element: <Quiz />,
+  },
+  {
+    path: "/quiz/one-player/:username",
+    element: <AttemptQuiz />,
+  },
+  {
+    path: "/quiz/two-player",
+    element: <TwoPlayer />,
+  },
+  {
+    path: "/quiz/two-players/:username/:rival",
+    element: <AttemptQuiz />,
+  },
+  {
+    path: "/quiz/two-players/with/:username/:attemptId",
+    element: <AttemptQuizWith />,
   },
   {
     path: "/login",

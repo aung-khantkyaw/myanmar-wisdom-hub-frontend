@@ -1,8 +1,6 @@
 import Navbar from "../../components/Navbar";
 import ProfileCard from "../../components/ProfileCard";
-
 const Profile = () => {
-  
   return (
     <div className="w-full relative">
       <div className="w-full fixed top-0 z-10">

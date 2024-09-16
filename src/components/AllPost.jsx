@@ -1,5 +1,3 @@
-import Loading from "../components/Loading";
-
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import Error from "../components/Error";
@@ -19,36 +17,46 @@ const AllPost = ({ user_id }) => {
         return response.json();
       })
       .then((data) => {
-        console.log(data);
         setPosts(data);
         setLoading(false);
       })
       .catch((error) => {
-        setError(error);
+        setError(error.response);
         setLoading(false);
       });
   }, []);
 
-  if (loading) return <Loading />;
-  if (error) return <Error error={error.message} />;
   return (
-    <div className="container mx-auto mt-8 ">
-      {posts.map((post) => (
-        <div key={post.id} className="justify-center items-center p-5">
-          <div className="border shadow-teal-300 shadow-md p-6 rounded-lg bg-base-100 w-full">
-            <h1 className="text-xl font-mono font-extrabold py-3">
-              {post.title}
-            </h1>
-            <div className="divider"></div>
-            <div>
-              <div
-                className="text-lg font-semibold"
-                dangerouslySetInnerHTML={{ __html: post.body }}
-              />
+    <div className="container mx-auto">
+      {error && <Error error={error} />}
+      {posts.length > 0 ? (
+        posts?.map((post) => (
+          <div
+            key={post.id}
+            className="card border border-sm shadow shadow-md p-4 mb-4"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center space-x-2">
+                <img
+                  src={post.profile}
+                  alt="profile"
+                  className="w-10 h-10 rounded-full"
+                />
+                <div>
+                  <p className="font-semibold">{post.username}</p>
+                </div>
+              </div>
             </div>
+            <h1 className="text-xl font-bold mb-4">{post.title}</h1>
+            <p
+              className="mb-4"
+              dangerouslySetInnerHTML={{ __html: post.body }}
+            ></p>
           </div>
-        </div>
-      ))}
+        ))
+      ) : (
+        <Error error={"Post Not Found!"} />
+      )}
     </div>
   );
 };

@@ -35,7 +35,7 @@ const AddPost = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("https://localhost:7051/api/Postss", formData);
+      await axios.post("https://localhost:7051/api/Posts", formData);
       setSuccess("Post Added: Successful");
       setError("");
     } catch (err) {
@@ -48,7 +48,7 @@ const AddPost = () => {
     <div className="post-form">
       <div className="flex-col bg-base-100 border border-stone-950 p-6 rounded-lg shadow-2xl text-center">
         <div className="flex justify-around items-center">
-          <h1 className="text-xl font-bold">ပိုစ့် အသစ်တင်ရန်</h1>
+          <h1 className="text-xl font-bold">Add Post</h1>
           {success && <Success success={success} />}
           {error && <Error error={error} />}
         </div>
@@ -59,7 +59,7 @@ const AddPost = () => {
                 type="text"
                 id="title"
                 name="title"
-                placeholder="ခေါင်းစဉ်"
+                placeholder="title"
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
                 value={formData.title}
                 onChange={handleChange}
@@ -94,7 +94,7 @@ const AddPost = () => {
                 type="submit"
                 className="px-6 py-2 bg-indigo-500 text-white font-semibold rounded-md hover:bg-indigo-600 focus:outline-none"
               >
-                တင်မည်
+                Post
               </button>
             </div>
           </form>

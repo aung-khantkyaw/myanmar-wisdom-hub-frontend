@@ -1,43 +1,59 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-
 import Loading from "./Loading";
+import axios from "axios";
 
-export default function AttemptQuiz() {
+export default function AttemptQuizWith() {
+  const { username, attemptId } = useParams();
+  const [quizIds, setQuizIds] = useState([]);
+  const [quizzes, setQuizzes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [currentQuizIndex, setCurrentQuizIndex] = useState(0);
   const [playerOneScore, setPlayerOneScore] = useState(0);
+  const [playerTwoScore, setPlayerTwoScore] = useState(0);
   const [answers, setAnswers] = useState({});
   const [timeLeft, setTimeLeft] = useState(10);
   const [isAnswered, setIsAnswered] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
-  const [quizzes, setQuizzes] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [success, setSuccess] = useState(null);
-  const [error, setError] = useState(null);
-  const [hasFetched, setHasFetched] = useState(false);
-  const playerOneUsername = useParams().username ?? null;
-  const playerTwoUsername = useParams().rival ?? null;
 
   useEffect(() => {
-    const fetchQuizzes = async () => {
+    const fetchAttemptQuiz = async () => {
       try {
         const response = await axios.get(
-          "https://localhost:7051/api/Quizs/random"
+          `https://localhost:7051/api/Attempt_Quizs/${attemptId}`
         );
-        setQuizzes(response.data);
-        setLoading(false);
-        setHasFetched(true);
+        setQuizIds(response.data.quizIds);
+        setPlayerOneScore(response.data.player_one_score);
+        setLoading(false); // Set loading to false after fetching quiz IDs
       } catch (error) {
         setError(error.message);
         setLoading(false);
       }
     };
 
-    if (!hasFetched) {
-      fetchQuizzes();
-    }
-  }, [hasFetched]);
+    fetchAttemptQuiz();
+  }, [attemptId]); // Fetch attempt quiz data only when attemptId changes
+
+  useEffect(() => {
+    const fetchQuizzes = async () => {
+      if (quizIds.length === 0) return; // Skip if there are no quiz IDs
+
+      try {
+        const response = await axios.get(
+          `https://localhost:7051/api/Quizs/ids?ids=${quizIds.join(",")}`
+        );
+        setQuizzes(response.data);
+        setLoading(false); // Set loading to false after fetching quizzes
+      } catch (error) {
+        setError(error.response);
+        setLoading(false);
+      }
+    };
+
+    fetchQuizzes();
+  }, [quizIds]); // Fetch quizzes only when quizIds changes
 
   useEffect(() => {
     if (isCompleted || quizzes.length === 0) return;
@@ -67,7 +83,7 @@ export default function AttemptQuiz() {
       [currentQuizIndex]: answer,
     }));
     if (answer === quizzes[currentQuizIndex].answer) {
-      setPlayerOneScore((playerOneScore) => playerOneScore + 1);
+      setPlayerTwoScore((playerTwoScore) => playerTwoScore + 1);
     }
   };
 
@@ -80,18 +96,13 @@ export default function AttemptQuiz() {
 
   const handleComplete = async (e) => {
     setIsCompleted(true);
-    const quizIds = quizzes.map((quiz) => quiz.id);
     const attemptQuizData = {
-      player_one_username: playerOneUsername,
-      player_two_username: playerTwoUsername,
-      player_one_score: playerOneScore,
-      QuizIdsString: quizIds.join(","),
+      player_two_score: playerTwoScore,
     };
     e.preventDefault();
-
     try {
-      await axios.post(
-        "https://localhost:7051/api/Attempt_Quizs",
+      await axios.put(
+        `https://localhost:7051/api/Attempt_Quizs/${attemptId}`,
         attemptQuizData
       );
       setSuccess("Successful");
@@ -102,26 +113,8 @@ export default function AttemptQuiz() {
     }
   };
 
-  const handleRestart = () => {
-    setCurrentQuizIndex(0);
-    setPlayerOneScore(0);
-    setAnswers({});
-    setTimeLeft(10);
-    setIsAnswered(false);
-    setIsCompleted(false);
-    setHasFetched(false);
-  };
-
   return (
-    <div
-      className="flex flex-col items-center justify-center h-screen"
-      style={{
-        backgroundImage: `url("HistoryofPuzzles.jpg")`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundAttachment: "fixed",
-      }}
-    >
+    <div className="flex flex-col items-center justify-center h-screen bg-background">
       {loading && <Loading loading={loading} />}
       {isCompleted ? (
         <div className="bg-card p-8 rounded-lg shadow-lg w-full max-w-md">
@@ -129,15 +122,16 @@ export default function AttemptQuiz() {
             Quiz Completed
           </h2>
           <p className="text-lg mb-4 text-center">
-            Your Score: {playerOneScore} / 5
+            Your Score: {playerTwoScore} / 5
           </p>
-          <div className="flex justify-between">
-            <button
-              onClick={handleRestart}
-              className="text-base-100 font-bold bg-primary text-card p-4 rounded-md hover:bg-primary-hover transition duration-300 ease-in-out w-1/3 text-center"
-            >
-              Restart Quiz
-            </button>
+          <p className="text-lg mb-4 text-center">
+            {playerTwoScore > playerOneScore
+              ? "You won!"
+              : playerTwoScore === playerOneScore
+              ? "It's a tie!"
+              : "You lost!"}
+          </p>
+          <div className="flex justify-center">
             <a
               href="/quiz"
               className="text-base-100 font-bold bg-primary text-card p-4 rounded-md hover:bg-primary-hover transition duration-300 ease-in-out w-1/3 text-center"

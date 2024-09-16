@@ -17,7 +17,7 @@ const Dashboard = () => {
           {userData.username === "admin@mwh" ? (
             <div className="bg-base-100 p-4 rounded-lg shadow-lg">
               <h1 className="text-2xl font-bold">
-                Welcome, {userData.first_name} {userData.last_name} !
+                Welcome, {userData.firstName} {userData.lastName} !
               </h1>
               <div className="grid grid-cols-3 gap-2 mt-3">
                 <div className="addProverb mb-2">
@@ -72,7 +72,7 @@ const Dashboard = () => {
                       <AddQuiz />
                     </div>
                     <form method="dialog" className="modal-backdrop">
-                      <button>close</button>
+                      <button>close</button>v
                     </form>
                   </dialog>
                 </div>
@@ -89,7 +89,7 @@ const Dashboard = () => {
           ) : (
             <div className="bg-base-100 p-4 rounded-lg shadow-lg">
               <h1 className="text-2xl font-bold">
-                Welcome, {userData.first_name} {userData.last_name} !
+                Welcome, {userData.firstName} {userData.lastName} !
               </h1>
               <div className="grid grid-cols-3 gap-2 mt-3">
                 <div className="col-span-2">

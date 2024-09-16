@@ -2,7 +2,7 @@ import Navbar from "../components/Navbar";
 import Loading from "../components/Loading";
 import Error from "../components/Error";
 
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 const Newsfeed = () => {
   // const posts = [
@@ -41,7 +41,6 @@ const Newsfeed = () => {
         return response.json();
       })
       .then((data) => {
-        console.log(data);
         setPosts(data);
         setLoading(false);
       })
@@ -70,51 +69,53 @@ const Newsfeed = () => {
           <div className="grid gap-6">
             {posts.map((post) => (
               <div
-                className="card bg-base-100 rounded rounded-md w-2/3 mx-auto"
                 key={post.id}
+                className="card border border-sm shadow shadow-md p-4 mb-4 w-2/3 mx-auto bg-base-100"
               >
-                {/* <CardDescription>
-                    By{" "}
-                    <Link href="#" className="font-medium" prefetch={false}>
-                      {post.author}
-                    </Link>
-                  </CardDescription> */}
-                <div className="card-body">
-                  <span className="card-title">{post.title}</span>
-                  <span>
-                    By{" "}
-                    <Link href="#" className="font-medium" prefetch={false}>
-                      {post.author}
-                    </Link>
-                  </span>
-                  <div className="divider"></div>
-                  <p>
-                    {showFullBody[post.id] ? (
-                      <div
-                        className="text-lg font-semibold"
-                        dangerouslySetInnerHTML={{ __html: post.body }}
-                      />
-                    ) : (
-                      <div
-                        className="text-lg font-semibold"
-                        dangerouslySetInnerHTML={{
-                          __html: `${post.body.slice(0, 150)}${
-                            post.body.length > 150 ? "..." : ""
-                          }`,
-                        }}
-                      />
-                    )}
-                  </p>
-                  {post.body.length > 150 && (
-                    <span
-                      // variant="link"
-                      onClick={() => toggleFullBody(post.id)}
-                      className="mt-2"
-                    >
-                      {showFullBody[post.id] ? "See less" : "See more..."}
-                    </span>
-                  )}
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center space-x-2">
+                    <img
+                      src={post.profile}
+                      alt="User"
+                      className="w-10 h-10 rounded border border-md"
+                    />
+                    <div>
+                      <p className="font-bold text-lg">{post.title}</p>
+                      by{" "}
+                      <a href={post.username} className="font-semibold">
+                        {post.username}
+                      </a>
+                    </div>
+                  </div>
+                  <button size="icon">
+                    {/* <MoreHorizontal className="h-4 w-4" /> */}
+                  </button>
                 </div>
+                <p>
+                  {showFullBody[post.id] ? (
+                    <div
+                      className="text-lg font-semibold"
+                      dangerouslySetInnerHTML={{ __html: post.body }}
+                    />
+                  ) : (
+                    <div
+                      className="text-lg font-semibold"
+                      dangerouslySetInnerHTML={{
+                        __html: `${post.body.slice(0, 150)}${
+                          post.body.length > 150 ? "..." : ""
+                        }`,
+                      }}
+                    />
+                  )}
+                </p>
+                {post.body.length > 150 && (
+                  <span
+                    onClick={() => toggleFullBody(post.id)}
+                    className="mt-2"
+                  >
+                    {showFullBody[post.id] ? "See less" : "See more..."}
+                  </span>
+                )}
               </div>
             ))}
           </div>

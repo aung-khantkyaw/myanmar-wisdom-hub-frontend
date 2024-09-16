@@ -3,6 +3,7 @@ import Navbar from "../components/Navbar";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import Error from "../components/Error";
 
 const Login = () => {
   const [formData, setFormData] = useState({ username: "", password: "" });
@@ -26,13 +27,15 @@ const Login = () => {
       if (response.data?.user) {
         setSuccess(response.data.Message);
         setError("");
-        localStorage.setItem("userData", JSON.stringify(response.data.user)); // Save to localStorage
+        localStorage.setItem("userData", JSON.stringify(response.data.user));
         navigate("/");
       } else {
-        console.error("User data not found in the response");
+        setError("User not found!");
       }
     } catch (err) {
-      setError(err.response?.data?.Message || "An error occurred");
+      setError(
+        err.response?.data?.Message || "Username or password is incorrect"
+      );
       setSuccess("");
     }
   };
@@ -53,7 +56,8 @@ const Login = () => {
           <h2 className="font-bold text-2xl mb-6">Login Your Account</h2>
           <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-80">
             {success && <p style={{ color: "green" }}>{success}</p>}
-            {error && <p style={{ color: "red" }}>{error}</p>}
+            {error && <Error error={error} />}
+
             <label className="input input-bordered flex items-center gap-2">
               <svg
                 xmlns="http://www.w3.org/2000/svg"

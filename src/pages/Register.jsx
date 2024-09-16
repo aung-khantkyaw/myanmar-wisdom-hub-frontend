@@ -1,4 +1,5 @@
 import Navbar from "../components/Navbar";
+import Error from "../components/Error";
 
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -6,6 +7,7 @@ import axios from "axios";
 
 const Register = () => {
   const navigate = useNavigate();
+  const [error, setError] = useState("");
 
   const [formData, setFormData] = useState({
     username: "",
@@ -15,8 +17,6 @@ const Register = () => {
     last_name: "",
     profile_url: "",
   });
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -30,17 +30,11 @@ const Register = () => {
     e.preventDefault();
     console.log(formData);
     try {
-      const response = await axios.post(
-        "https://localhost:7051/api/Users/register",
-        formData
-      );
-      setSuccess(response.data.message);
-      setError("");
+      await axios.post("https://localhost:7051/api/Users/register", formData);
       navigate("/login");
     } catch (err) {
-      console.error("Error response:", err.response);
-      setError(err.response.data.message || "An error occurred");
-      setSuccess("");
+      console.error("Error response:", err.response.data);
+      setError(err.response.data || "An Error Occur");
     }
   };
 
@@ -50,11 +44,7 @@ const Register = () => {
         <Navbar />
       </div>
       <div
-        className="hero min-h-screen bg-base-300"
-        // style={{
-        //   backgroundImage: `url(${bgImage})`,
-        // }}
-      >
+        className="hero min-h-screen bg-base-300">
         <div className="flex-col bg-base-100 p-6 rounded-lg shadow-2xl text-center">
           <h2 className="font-bold text-2xl mb-6">Create New Account</h2>
           <form
@@ -62,8 +52,7 @@ const Register = () => {
             className="flex flex-col gap-4 w-80
         "
           >
-            {success && <p style={{ color: "green" }}>{success}</p>}
-            {error && <p style={{ color: "red" }}>{error}</p>}
+            {error && <Error error={error} />}
             <label className="input input-bordered flex items-center gap-2">
               <input
                 type="text"

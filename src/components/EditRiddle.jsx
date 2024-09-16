@@ -2,10 +2,12 @@ import { useState } from "react";
 import axios from "axios";
 import Success from "./Success";
 import Error from "./Error";
-const AddRiddle = () => {
+import PropTypes from "prop-types";
+const EditRiddle = ({ riddle_id, riddle, answer }) => {
   const [formData, setFormData] = useState({
-    riddle: "",
-    answer: "",
+    id: riddle_id,
+    riddle: riddle,
+    answer: answer,
   });
 
   const [success, setSuccess] = useState("");
@@ -20,14 +22,20 @@ const AddRiddle = () => {
   };
 
   const handleSubmit = async (e) => {
+    console.log(formData);
     e.preventDefault();
     try {
-      await axios.post("https://localhost:7051/api/Riddles/add", formData);
+      await axios.put(
+        `https://localhost:7051/api/Riddles/${riddle_id}`,
+        formData
+      );
       formData.riddle = "";
       formData.answer = "";
-      setSuccess("Riddle added successfully!");
+      setSuccess("Riddle Edit successfully!");
+      setError("");
     } catch (err) {
-      setError(err.response?.data?.message || "An error occurred");
+      setError(err.response?.message || "An error occurred");
+      setSuccess("");
     }
   };
 
@@ -66,12 +74,16 @@ const AddRiddle = () => {
             type="submit"
             className="btn btn-primary font-bold text-white"
           >
-            Add
+            Edit
           </button>
         </form>
       </div>
     </div>
   );
 };
-
-export default AddRiddle;
+EditRiddle.propTypes = {
+  riddle_id: PropTypes.number,
+  riddle: PropTypes.string,
+  answer: PropTypes.string,
+};
+export default EditRiddle;

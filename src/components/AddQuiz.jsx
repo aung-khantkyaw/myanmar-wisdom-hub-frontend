@@ -1,5 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
+import Success from "./Success";
+import Error from "./Error";
 
 const AddQuiz = () => {
   const [formData, setFormData] = useState({
@@ -27,6 +29,14 @@ const AddQuiz = () => {
     try {
       await axios.post("https://localhost:7051/api/Quizs/add", formData);
       setSuccess("Quiz added successfully!");
+      setFormData({
+        question: "",
+        option_one: "",
+        option_two: "",
+        option_three: "",
+        option_four: "",
+        answer: "",
+      });
       setError("");
     } catch (err) {
       setError(err.response?.data?.message || "An error occurred");
@@ -37,19 +47,19 @@ const AddQuiz = () => {
   return (
     <div className="proverb-form">
       <div className="flex-col bg-base-100 border border-stone-950 p-6 rounded-lg shadow-2xl text-center">
-        {success && <p style={{ color: "green" }}>{success}</p>}
-        {error && <p style={{ color: "red" }}>{error}</p>}
         <form
           onSubmit={handleSubmit}
           className="flex flex-col gap-4 w-80 mx-auto"
         >
+          {success && <Success success={success} />}
+          {error && <Error error={error} />}
           <label className="input input-bordered flex items-center gap-2">
             <input
               type="text"
               name="question"
               className="grow"
               placeholder="Question"
-              value={formData.riddle}
+              value={formData.question}
               onChange={handleChange}
               required
             />
@@ -60,7 +70,7 @@ const AddQuiz = () => {
               name="option_one"
               className="grow"
               placeholder="Option One"
-              value={formData.riddle}
+              value={formData.option_one}
               onChange={handleChange}
               required
             />
@@ -71,7 +81,7 @@ const AddQuiz = () => {
               name="option_two"
               className="grow"
               placeholder="Option Two"
-              value={formData.riddle}
+              value={formData.option_two}
               onChange={handleChange}
               required
             />
@@ -82,7 +92,7 @@ const AddQuiz = () => {
               name="option_three"
               className="grow"
               placeholder="Option Three"
-              value={formData.riddle}
+              value={formData.option_three}
               onChange={handleChange}
               required
             />
@@ -93,7 +103,7 @@ const AddQuiz = () => {
               name="option_four"
               className="grow"
               placeholder="Option Four"
-              value={formData.riddle}
+              value={formData.option_four}
               onChange={handleChange}
               required
             />
@@ -113,7 +123,7 @@ const AddQuiz = () => {
             type="submit"
             className="btn btn-primary font-bold text-white"
           >
-            စကားပုံထည့်မည်
+            Add
           </button>
         </form>
       </div>
