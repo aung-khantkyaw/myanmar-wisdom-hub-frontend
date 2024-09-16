@@ -36,6 +36,8 @@ const AddPost = () => {
     e.preventDefault();
     try {
       await axios.post("https://localhost:7051/api/Posts", formData);
+      formData.title = "";
+      formData.body = "";
       setSuccess("Post Added: Successful");
       setError("");
     } catch (err) {

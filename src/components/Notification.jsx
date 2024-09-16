@@ -18,7 +18,7 @@ const Notification = () => {
         );
         setNotifications(response.data);
       } catch (err) {
-        setError(err.response || "Error fetching notifications");
+        setError(err.response?.data?.title || "Error fetching notifications");
       } finally {
         setLoading(false);
       }
@@ -52,18 +52,18 @@ const Notification = () => {
       ) : (
         <div className="text-start">
           <ul>
-            {notifications.map((notification) => (
+            {notifications?.map((notification) => (
               <li
-                key={notification.id}
+                key={notification?.id}
                 className="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-2 rounded-lg mb-2 flex justify-between items-center"
               >
-                {notification.content}
-                {notification.is_answer ? (
+                {notification?.content}
+                {notification?.is_answer ? (
                   <p className="btn btn-danger btn-sm">Answered</p>
                 ) : (
                   <Link
                     to={`/quiz/two-players/with/${userData.username}/${notification.attempt_Id}`}
-                    onClick={() => updateNotification(notification.id)}
+                    onClick={() => updateNotification(notification?.id)}
                     className="btn btn-primary btn-sm"
                   >
                     Accept

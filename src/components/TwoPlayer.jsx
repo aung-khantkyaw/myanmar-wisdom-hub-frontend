@@ -126,7 +126,7 @@ export default function TwoPlayer() {
       >
         <div className="hero-content flex-col">
           <h1 className="text-3xl font-bold text-center mb-8">
-            Two Player Quiz
+            Two Players Quiz
           </h1>
           <p className="text-center mb-8">
             Welcome to the two-player quiz mode! Find a rival and get ready to
