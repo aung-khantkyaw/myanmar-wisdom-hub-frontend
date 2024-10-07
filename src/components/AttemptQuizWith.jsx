@@ -136,7 +136,7 @@ export default function AttemptQuizWith() {
               href="/quiz"
               className="text-base-100 font-bold bg-primary text-card p-4 rounded-md hover:bg-primary-hover transition duration-300 ease-in-out w-1/3 text-center"
             >
-              Exist
+              Exit
             </a>
           </div>
         </div>

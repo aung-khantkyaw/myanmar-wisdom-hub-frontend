@@ -134,7 +134,7 @@ export default function ProfileCard() {
             About content
             <ul>
               <li>
-                {user?.firstName} {user?.lastName}
+                {user?.first_name} {user?.last_name}
               </li>
               <li></li>
               <li></li>
