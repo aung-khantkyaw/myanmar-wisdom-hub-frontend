@@ -4,6 +4,7 @@ import Loading from "../components/Loading";
 import axios from "axios";
 import EditRiddle from "../components/EditRiddle";
 import { useEffect, useState } from "react";
+import Error from "../components/Error";
 
 const Riddle = () => {
   const userData = JSON.parse(localStorage.getItem("userData"));
@@ -25,13 +26,13 @@ const Riddle = () => {
         setLoading(false);
       })
       .catch((error) => {
-        setError(error);
+        setError(error.message.title || "Resource not found");
         setLoading(false);
       });
   }, []);
 
   if (loading) return <Loading />;
-  if (error) return <p>Error: {error.message}</p>;
+  if (error) return <Error type={404} error={error} link={"/"} />;
   return (
     <div className="w-full relative">
       <div className="w-full fixed top-0 z-10">

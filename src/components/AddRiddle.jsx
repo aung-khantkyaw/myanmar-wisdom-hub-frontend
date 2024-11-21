@@ -26,6 +26,9 @@ const AddRiddle = () => {
       formData.riddle = "";
       formData.answer = "";
       setSuccess("Riddle added successfully!");
+      setTimeout(() => {
+        setSuccess("");
+      }, 3000);
     } catch (err) {
       setError(err.response?.data?.message || "An error occurred");
     }

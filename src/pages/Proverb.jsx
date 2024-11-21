@@ -24,12 +24,12 @@ const Proverb = () => {
         setLoading(false);
       })
       .catch((error) => {
-        setError(error);
+        setError(error.message.title || "Resource not found");
         setLoading(false);
       });
   }, []);
   if (loading) return <Loading />;
-  if (error) return <Error error={error.message} />;
+  if (error) return <Error type={404} error={error} link={"/"} />;
 
   return (
     <div className="w-full relative">

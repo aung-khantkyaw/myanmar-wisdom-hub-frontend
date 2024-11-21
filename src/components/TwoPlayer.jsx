@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -9,29 +9,31 @@ export default function TwoPlayer() {
   const userData = JSON.parse(localStorage.getItem("userData"));
   const [rival, setRival] = useState(String);
   const [isSearching, setIsSearching] = useState(false);
-  const [usernames, setUsernames] = useState([]);
+  // const [usernames, setUsernames] = useState([]);
   const [error, setError] = useState();
   const [loading, setLoading] = useState();
   const [notificationSent, setNotificationSent] = useState(false);
 
-  useEffect(() => {
-    const fetchUsernames = async () => {
-      try {
-        const response = await axios.get("https://localhost:7051/api/Users");
-        const array = response.data.map((data) => data.username);
-        const usernamesArray = array.filter(
-          (item) => item !== userData.username
-        );
-        console.log(usernamesArray);
-        setUsernames(usernamesArray);
-      } catch (err) {
-        setError(err.response?.data?.message || "User not found");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchUsernames();
-  }, []);
+  const usernames = ["admin@mwh"];
+
+  // useEffect(() => {
+  //   const fetchUsernames = async () => {
+  //     try {
+  //       const response = await axios.get("https://localhost:7051/api/Users");
+  //       const array = response.data.map((data) => data.username);
+  //       const usernamesArray = array.filter(
+  //         (item) => item !== userData.username
+  //       );
+  //       console.log(usernamesArray);
+  //       setUsernames(usernamesArray);
+  //     } catch (err) {
+  //       setError(err.response?.data?.message || "User not found");
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+  //   fetchUsernames();
+  // }, []);
 
   const findRival = () => {
     setIsSearching(true);
@@ -72,6 +74,7 @@ export default function TwoPlayer() {
     const nextId = await getNextAttemptQuizId(); // Wait for the promise to resolve
     return nextId;
   }
+
   const sentNotification = async () => {
     if (rival != null) {
       if (notificationSent) {

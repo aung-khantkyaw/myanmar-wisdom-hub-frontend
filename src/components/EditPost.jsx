@@ -1,18 +1,20 @@
 import { useState } from "react";
+import PropTypes from "prop-types";
 import axios from "axios";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import Success from "./Success";
 import Error from "./Error";
 
-const AddPost = () => {
+const EditPost = ({ post }) => {
   const userData = JSON.parse(localStorage.getItem("userData"));
 
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
   const [formData, setFormData] = useState({
-    title: "",
-    body: "",
+    id: post.id,
+    title: post.title,
+    body: post.body,
     user_id: userData.id,
   });
 
@@ -35,16 +37,13 @@ const AddPost = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("https://localhost:7051/api/Posts", formData);
+      await axios.put(`https://localhost:7051/api/Posts/${post.id}`, formData);
       formData.title = "";
       formData.body = "";
-      setSuccess("Post Added: Successful");
-      setTimeout(() => {
-        setSuccess("");
-      }, 3000);
+      setSuccess("Post Edited: Successful");
       setError("");
     } catch (err) {
-      setError(err.response?.data?.message || "Post Added: Failed");
+      setError(err.response?.data?.message || "Post Edited: Failed");
       setSuccess("");
     }
   };
@@ -53,7 +52,7 @@ const AddPost = () => {
     <div className="post-form">
       <div className="flex-col bg-base-100 border border-stone-950 p-6 rounded-lg shadow-2xl text-center">
         <div className="flex justify-around items-center">
-          <h1 className="text-xl font-bold">Add Post</h1>
+          <h1 className="text-xl font-bold">Edit Post</h1>
           {success && <Success success={success} />}
           {error && <Error error={error} />}
         </div>
@@ -99,7 +98,7 @@ const AddPost = () => {
                 type="submit"
                 className="px-6 py-2 bg-indigo-500 text-white font-semibold rounded-md hover:bg-indigo-600 focus:outline-none"
               >
-                Post
+                Edit Post
               </button>
             </div>
           </form>
@@ -109,4 +108,8 @@ const AddPost = () => {
   );
 };
 
-export default AddPost;
+EditPost.propTypes = {
+  post: PropTypes.object.isRequired,
+};
+
+export default EditPost;

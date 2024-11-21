@@ -31,6 +31,9 @@ const AddProverb = () => {
       formData.proverb_english = "";
       formData.meaning_english = "";
       setSuccess("Proverb added successfully!");
+      setTimeout(() => {
+        setSuccess("");
+      }, 3000);
       setError("");
     } catch (err) {
       setError(err.response?.data?.message || "An error occurred");

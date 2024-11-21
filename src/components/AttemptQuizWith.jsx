@@ -4,12 +4,14 @@ import Loading from "./Loading";
 import axios from "axios";
 
 export default function AttemptQuizWith() {
+  const userData = JSON.parse(localStorage.getItem("userData"));
   const { username, attemptId } = useParams();
   const [quizIds, setQuizIds] = useState([]);
   const [quizzes, setQuizzes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentQuizIndex, setCurrentQuizIndex] = useState(0);
+  const [playerOneUsername, setPlayerOneUsername] = useState(null);
   const [playerOneScore, setPlayerOneScore] = useState(0);
   const [playerTwoScore, setPlayerTwoScore] = useState(0);
   const [answers, setAnswers] = useState({});
@@ -17,6 +19,8 @@ export default function AttemptQuizWith() {
   const [isAnswered, setIsAnswered] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
   const [success, setSuccess] = useState(null);
+
+  const [notificationSent, setNotificationSent] = useState(false);
 
   useEffect(() => {
     const fetchAttemptQuiz = async () => {
@@ -26,6 +30,7 @@ export default function AttemptQuizWith() {
         );
         setQuizIds(response.data.quizIds);
         setPlayerOneScore(response.data.player_one_score);
+        setPlayerOneUsername(response.data.player_one_username);
         setLoading(false); // Set loading to false after fetching quiz IDs
       } catch (error) {
         setError(error.message);
@@ -35,6 +40,21 @@ export default function AttemptQuizWith() {
 
     fetchAttemptQuiz();
   }, [attemptId]); // Fetch attempt quiz data only when attemptId changes
+
+  useEffect(() => {
+    const fetchPlayerOneName = async () => {
+      try {
+        const response = await axios.get(
+          `https://localhost:7051/api/Users/ById/${playerOneUsername}`
+        );
+        setPlayerOneUsername(response.data.username);
+      } catch (error) {
+        setError(error.message);
+      }
+    };
+
+    fetchPlayerOneName();
+  }, [playerOneUsername]);
 
   useEffect(() => {
     const fetchQuizzes = async () => {
@@ -113,6 +133,51 @@ export default function AttemptQuizWith() {
     }
   };
 
+  const winner = () => {
+    if (playerTwoScore > playerOneScore) return `${userData.username} won!`;
+    if (playerTwoScore === playerOneScore) return "It's a tie!";
+    return `${playerOneUsername} won!`;
+  };
+
+  const sentNotification = async () => {
+    if (playerOneUsername != null) {
+      if (notificationSent) {
+        return;
+      }
+
+      try {
+        setLoading(true);
+        setError(null);
+        const notificationData = {
+          from_user_name: userData.username,
+          to_user_name: playerOneUsername,
+          notification_type: "Result",
+          content: `${
+            userData.username
+          } get ${playerTwoScore} and ${playerOneUsername} get ${playerOneScore}. So, ${winner()}`,
+          attempt_Id: attemptId,
+        };
+
+        await axios.post(
+          "https://localhost:7051/api/Notifications",
+          notificationData,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        setNotificationSent(true);
+      } catch (err) {
+        console.log(err.response);
+        setError("Failed to send invitation.");
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-background">
       {loading && <Loading loading={loading} />}
@@ -124,17 +189,12 @@ export default function AttemptQuizWith() {
           <p className="text-lg mb-4 text-center">
             Your Score: {playerTwoScore} / 5
           </p>
-          <p className="text-lg mb-4 text-center">
-            {playerTwoScore > playerOneScore
-              ? "You won!"
-              : playerTwoScore === playerOneScore
-              ? "It's a tie!"
-              : "You lost!"}
-          </p>
+          <p className="text-lg mb-4 text-center">{winner()}</p>
           <div className="flex justify-center">
             <a
               href="/quiz"
               className="text-base-100 font-bold bg-primary text-card p-4 rounded-md hover:bg-primary-hover transition duration-300 ease-in-out w-1/3 text-center"
+              onClick={() => sentNotification()}
             >
               Exit
             </a>
